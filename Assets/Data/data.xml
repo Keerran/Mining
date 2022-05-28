@@ -1,0 +1,14 @@
+<Data>
+    <Modules>
+        <Module name="trees" symmetry="X"/>
+        <Module name="grass" symmetry="X"/>
+        <Module name="water" symmetry="X" weight="0.5"/>
+    </Modules>
+    <Rules>
+        <Rule left="trees" right="grass"/>
+        <Rule left="trees" right="trees"/>
+        <Rule left="grass" right="grass"/>
+        <Rule left="grass" right="water"/>
+        <Rule left="water" right="water"/>
+    </Rules>
+</Data>
