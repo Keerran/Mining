@@ -11,7 +11,6 @@ public class Collapse : MonoBehaviour
     public int xDim, yDim;
     public Tile[] tiles;
     public GameObject grid;
-    public GameObject cell;
     public TextAsset xml;
     public Model model;
 
@@ -32,6 +31,7 @@ public class Collapse : MonoBehaviour
         {
             DestroyImmediate(grid.transform.GetChild(0).gameObject);
         }
+
         var output = model.Grid();
         for(int i = 0; i < xDim; i++)
         {
@@ -44,10 +44,13 @@ public class Collapse : MonoBehaviour
                 {
                     if(!cell[tile])
                         continue;
-                    var prefab = prefabs[model.tiles[tile]];
-                    var pos = new Vector3(1f * j + (float)(count % size) / size, 1f * i + (float)(count / size) / size, 0);
+                    var (tileName, index) = model.baseTiles[tile];
+                    var prefab = prefabs[tileName];
+                    var pos = new Vector3(1.2f * j + (float)(count % size) / size, 1.2f * i + (float)(count / size) / size, 0);
                     // var pos = new Vector3(i, j, 0);
                     var go = Instantiate(prefab, pos, Quaternion.identity, grid.transform);
+                    go.name = $"{tileName} {tile - index}";
+                    go.transform.eulerAngles += 90 * (index - tile) * Vector3.forward;
                     go.transform.localScale = new Vector3(1.0f / size, 1.0f / size, 0);
                     count++;
                 }

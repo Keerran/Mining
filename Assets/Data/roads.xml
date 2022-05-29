@@ -1,0 +1,44 @@
+<Data>
+    <Modules>
+        <Module name="corner" symmetry="L"/>
+        <Module name="tjunc" symmetry="T"/>
+        <Module name="straight" symmetry="I" weight="0.5"/>
+        <Module name="intersection" symmetry="X" weight="0.5"/>
+        <Module name="grass" symmetry="X" weight="0.5"/>
+    </Modules>
+    <Rules>
+        <Rule left="corner" right="corner 2"/>
+        <Rule left="corner" right="corner 3"/>
+        <Rule left="corner" right="tjunc"/>
+        <Rule left="corner" right="tjunc 1"/>
+        <Rule left="corner" right="tjunc 2"/>
+        <Rule left="corner" right="straight 1"/>
+        <Rule left="corner" right="intersection"/>
+        <Rule left="corner 1" right="intersection"/>
+
+        <Rule left="corner 2" right="corner 1"/>
+        <Rule left="corner 2" right="corner"/>
+        <Rule left="corner 2" right="tjunc 3"/>
+        <Rule left="corner 3" right="tjunc 3"/>
+        <Rule left="corner 3" right="straight"/>
+        <Rule left="corner 2" right="straight"/>
+
+        <Rule left="tjunc" right="tjunc"/>
+        <Rule left="tjunc" right="tjunc 1"/>
+        <Rule left="tjunc" right="tjunc 2"/>
+        <Rule left="tjunc" right="straight 1"/>
+        <Rule left="tjunc 1" right="tjunc 3"/>
+
+        <Rule left="straight 1" right="intersection"/>
+        <Rule left="straight 1" right="straight 1"/>
+        <Rule left="straight" right="straight"/>
+
+        <Rule left="intersection" right="intersection"/>
+        
+        <Rule left="grass" right="corner"/>
+        <Rule left="grass" right="corner 1"/>
+        <Rule left="grass" right="tjunc 3"/>
+        <Rule left="grass" right="straight"/>
+        <Rule left="grass" right="grass"/>
+    </Rules>
+</Data>
