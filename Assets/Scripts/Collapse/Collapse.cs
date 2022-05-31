@@ -27,11 +27,14 @@ public class Collapse : MonoBehaviour
 
     void UpdateGrid()
     {
-        while(grid.transform.childCount > 0)
-        {
-            DestroyImmediate(grid.transform.GetChild(0).gameObject);
-        }
+        // while(grid.transform.childCount > 0)
+        // {
+        //     DestroyImmediate(grid.transform.GetChild(0).gameObject);
+        // }
 
+        DestroyImmediate(grid);
+        grid = new GameObject();
+        // grid.name = "Grid";
         var output = model.Grid();
         for(int i = 0; i < xDim; i++)
         {
@@ -48,10 +51,10 @@ public class Collapse : MonoBehaviour
                     var prefab = prefabs[tileName];
                     var pos = new Vector3(1.2f * j + (float)(count % size) / size, 1.2f * i + (float)(count / size) / size, 0);
                     // var pos = new Vector3(i, j, 0);
-                    var go = Instantiate(prefab, pos, Quaternion.identity, grid.transform);
+                    var go = Instantiate(prefab, pos, Quaternion.Euler(0, 90, -90), grid.transform);
                     go.name = $"{tileName} {tile - index}";
-                    go.transform.eulerAngles += 90 * (index - tile) * Vector3.forward;
-                    go.transform.localScale = new Vector3(1.0f / size, 1.0f / size, 0);
+                    go.transform.eulerAngles -= 90 * (index - tile - 1) * Vector3.right;
+                    go.transform.localScale = new Vector3(0.1f / size, 1, 0.1f / size);
                     count++;
                 }
             }
@@ -92,7 +95,13 @@ public class Collapse : MonoBehaviour
     public IEnumerator Run()
     {
         if (model != null)
+        {
+            do
+            {
             model.Run();
+            }
+            while(model.Grid().Sum(x => x.Sum()) == 0);
+        }
 
         UpdateGrid();
 

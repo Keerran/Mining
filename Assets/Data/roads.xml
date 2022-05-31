@@ -2,9 +2,10 @@
     <Modules>
         <Module name="corner" symmetry="L"/>
         <Module name="tjunc" symmetry="T"/>
-        <Module name="straight" symmetry="I" weight="0.5"/>
+        <Module name="straight" symmetry="I"/>
         <Module name="intersection" symmetry="X" weight="0.5"/>
         <Module name="grass" symmetry="X" weight="0.5"/>
+        <Module name="deadend" symmetry="T"/>
     </Modules>
     <Rules>
         <Rule left="corner" right="corner 2"/>
@@ -40,5 +41,32 @@
         <Rule left="grass" right="tjunc 3"/>
         <Rule left="grass" right="straight"/>
         <Rule left="grass" right="grass"/>
+
+        <Rule left="deadend 1" right="corner 2"/>
+        <Rule left="deadend 1" right="corner 3"/>
+        <Rule left="deadend 1" right="tjunc"/>
+        <Rule left="deadend 1" right="tjunc 1"/>
+        <Rule left="deadend 1" right="tjunc 2"/>
+        <Rule left="deadend 1" right="straight 1"/>
+        <Rule left="deadend 1" right="intersection"/>
+
+        <Rule left="deadend" right="grass"/>
+        <Rule left="deadend" right="straight"/>
+        <Rule left="deadend" right="tjunc 3"/>
+        <Rule left="deadend" right="corner"/>
+        <Rule left="deadend" right="corner 1"/>
+
+        <Rule left="deadend 2" right="grass"/>
+        <Rule left="deadend 2" right="straight"/>
+        <Rule left="deadend 2" right="tjunc 3"/>
+        <Rule left="deadend 2" right="corner"/>
+        <Rule left="deadend 2" right="corner 1"/>
+
+        <Rule left="deadend 3" right="grass"/>
+        <Rule left="deadend 3" right="straight"/>
+        <Rule left="deadend 3" right="tjunc 3"/>
+        <Rule left="deadend 3" right="corner"/>
+        <Rule left="deadend 3" right="corner 1"/>
+
     </Rules>
 </Data>

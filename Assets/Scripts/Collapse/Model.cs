@@ -59,12 +59,13 @@ public class Model
 
         tiles = tileEls.Select(tag => tag.Get("name"))
                        .ToArray();
-        weights = tileEls.Select(tag => double.Parse(tag.Get("weight") ?? "1.0"))
-                         .ToArray();
+        var tileWeights = tileEls.Select(tag => double.Parse(tag.Get("weight") ?? "1.0"))
+                                 .ToArray();
         indices = tiles.Select((v, i) => new { Key = v, Value = i })
                        .ToDictionary(o => o.Key, o => o.Value);
 
         var action = new List<int[]>();
+        var weightList = new List<double>();
 
         for (int i = 0; i < tiles.Length; i++)
         {
@@ -110,8 +111,10 @@ public class Model
 
                 action.Add(map.Select(x => x + firstOccurrence).ToArray());
                 baseTiles.Add((name, firstOccurrence));
+                weightList.Add(tileWeights[i] / cardinality);
             }
         }
+        weights = weightList.ToArray();
         numTiles = action.Count;
         var adjacency = new bool[directions.Length, numTiles, numTiles];
 
@@ -135,9 +138,9 @@ public class Model
             adjacency[1, action[d][2], action[u][2]] = true;
         }
 
-        for(int i = 0; i < numTiles; i++)
+        for (int i = 0; i < numTiles; i++)
         {
-            for(int j = 0; j < numTiles; j++)
+            for (int j = 0; j < numTiles; j++)
             {
                 adjacency[2, j, i] = adjacency[0, i, j];
                 adjacency[3, j, i] = adjacency[1, i, j];
@@ -219,7 +222,6 @@ public class Model
 
     void Ban(int cell, int tile)
     {
-        Debug.Log($"{cell} {baseTiles[tile].Item1} {tile - baseTiles[tile].Item2}");
         cells[cell][tile] = false;
 
         int[] comp = compatible[cell][tile];
@@ -252,7 +254,8 @@ public class Model
 
     int Observe(int cell)
     {
-        double[] distribution = cells[cell].Select((v, i) => v ? 1.0 : 0.0).ToArray();
+        double[] distribution = cells[cell]
+            .Select((v, i) => v ? weights[i] : 0.0).ToArray();
 
         var observation = distribution.Random(random.NextDouble());
 
