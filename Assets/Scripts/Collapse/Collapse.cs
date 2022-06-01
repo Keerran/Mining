@@ -54,7 +54,7 @@ public class Collapse : MonoBehaviour
                     var go = Instantiate(prefab, pos, Quaternion.Euler(0, 90, -90), grid.transform);
                     go.name = $"{tileName} {tile - index}";
                     go.transform.eulerAngles -= 90 * (index - tile - 1) * Vector3.right;
-                    go.transform.localScale = new Vector3(0.1f / size, 1, 0.1f / size);
+                    go.transform.localScale = new Vector3(0.1f / size, 0.1f, 0.1f / size);
                     count++;
                 }
             }
