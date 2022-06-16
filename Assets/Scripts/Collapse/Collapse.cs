@@ -51,10 +51,10 @@ public class Collapse : MonoBehaviour
                     var prefab = prefabs[tileName];
                     var pos = new Vector3(1.2f * j + (float)(count % size) / size, 1.2f * i + (float)(count / size) / size, 0);
                     // var pos = new Vector3(i, j, 0);
-                    var go = Instantiate(prefab, pos, Quaternion.Euler(0, 90, -90), grid.transform);
+                    var go = Instantiate(prefab, pos, Quaternion.Euler(0, -90, 90), grid.transform);
                     go.name = $"{tileName} {tile - index}";
-                    go.transform.eulerAngles -= 90 * (index - tile - 1) * Vector3.right;
-                    go.transform.localScale = new Vector3(0.1f / size, 0.1f, 0.1f / size);
+                    go.transform.eulerAngles -= 90 * (tile - index + 1) * Vector3.right;
+                    go.transform.localScale = new Vector3(0.2f / size, 0.2f, 0.2f / size);
                     count++;
                 }
             }

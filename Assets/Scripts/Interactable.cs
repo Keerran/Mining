@@ -7,6 +7,7 @@ public class Interactable : MonoBehaviour
 {
     public UnityEvent focusEvent;
     public UnityEvent interactEvent;
+    public UnityEvent unfocusEvent;
 
     void Awake()
     {
@@ -15,5 +16,8 @@ public class Interactable : MonoBehaviour
 
         if(interactEvent == null)
             interactEvent = new UnityEvent();
+
+        if(unfocusEvent == null)
+            unfocusEvent = new UnityEvent();
     }
 }

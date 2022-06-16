@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
 {
+    public float cellScale;
     public int xSize, ySize;
     public TextAsset rules;
     public Tile[] tiles;
@@ -41,10 +42,10 @@ public class LevelBuilder : MonoBehaviour
                     var (tileName, index) = model.baseTiles[tile];
                     var prefab = prefabs[tileName];
                     var pos = new Vector3(12 * j, 0, 12 * i);
-                    var go = Instantiate(prefab, pos, Quaternion.Euler(0, 180, 0), grid.transform);
+                    var go = Instantiate(prefab, pos, Quaternion.identity, grid.transform);
                     go.name = $"{tileName} {tile - index}";
                     go.transform.eulerAngles += 90 * (tile - index) * Vector3.up;
-                    go.transform.localScale = new Vector3(1, 1, 1);
+                    go.transform.localScale = Vector3.one * cellScale;
                 }
             }
         }

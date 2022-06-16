@@ -5,8 +5,18 @@ using UnityEngine;
 
 public static class Extensions
 {
+    public static Vector3 ZeroX(this Vector3 vector) {
+        vector.x = 0;
+        return vector;
+    }
+
     public static Vector3 ZeroY(this Vector3 vector) {
         vector.y = 0;
+        return vector;
+    }
+
+    public static Vector3 ZeroZ(this Vector3 vector) {
+        vector.z = 0;
         return vector;
     }
 
