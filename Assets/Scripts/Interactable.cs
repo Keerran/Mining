@@ -20,4 +20,6 @@ public class Interactable : MonoBehaviour
         if(unfocusEvent == null)
             unfocusEvent = new UnityEvent();
     }
+
+    
 }

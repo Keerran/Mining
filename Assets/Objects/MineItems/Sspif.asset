@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e077d3f77f3edb4bb2ea9de06c89336, type: 3}
+  m_Name: Sspif
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 7046958949407748651, guid: 16a302707887bc442a1a21f63ea906c0, type: 3}
+  size: {x: 2, y: 3}
+  item: {fileID: 11400000, guid: 05ab2b9915f58a040929342478bddc96, type: 2}

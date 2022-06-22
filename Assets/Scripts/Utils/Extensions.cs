@@ -49,4 +49,9 @@ public static class Extensions
     {
         return list.Sum(val => val ? 1 : 0);
     }
+
+    public static bool LessThan(this Vector2 vec, Vector2 other)
+    {
+        return vec.x <= other.x && vec.y <= other.y;
+    }
 }
