@@ -5,15 +5,15 @@ using UnityEngine;
 public class Cam : MonoBehaviour
 {
     public float rotateSpeed = 5;
-    public float distToPlayer = 6;
+    public float distToPlayer = 10;
+    public Transform focalPoint;
 
-    private Vector3 _offset;
-    private RaycastHit closeZoom;
+    private RaycastHit _closeZoom;
 
     // Start is called before the first frame update
     void Start()
     {
-        _offset = transform.position - transform.parent.position;
+
     }
 
     // Update is called once per frame
@@ -22,19 +22,19 @@ public class Cam : MonoBehaviour
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed;
 
-        transform.RotateAround(transform.parent.position, transform.parent.right, -vertical);
+        transform.RotateAround(focalPoint.position, transform.parent.right, -vertical);
         transform.parent.Rotate(Vector3.up * horizontal);
 
-        var ray = new Ray(transform.parent.position, -transform.forward);
-        Debug.DrawRay(transform.parent.position, -transform.forward * distToPlayer, Color.magenta);
+        var ray = new Ray(focalPoint.position, -transform.forward);
+        Debug.DrawRay(focalPoint.position, -transform.forward * distToPlayer, Color.magenta);
         //disttoplayer
-        if (Physics.Raycast(ray, out closeZoom, distToPlayer, ~LayerMask.NameToLayer("Terrain")))
+        if (Physics.Raycast(ray, out _closeZoom, distToPlayer, ~LayerMask.NameToLayer("Terrain")))
         {
-            transform.position = transform.parent.position - transform.forward * (closeZoom.distance - 0.1f);
+            transform.position = focalPoint.position - transform.forward * (_closeZoom.distance - 0.1f);
         }
         else
         {
-            transform.position = transform.parent.position - transform.forward * (distToPlayer - 0.1f);
+            transform.position = focalPoint.position - transform.forward * (distToPlayer - 0.1f);
         }
     }
 }
