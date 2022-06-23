@@ -3,23 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Interactable : MonoBehaviour
+public abstract class Interactable : MonoBehaviour
 {
-    public UnityEvent focusEvent;
-    public UnityEvent interactEvent;
-    public UnityEvent unfocusEvent;
+    public abstract void OnFocus();
 
-    void Awake()
-    {
-        if(focusEvent == null)
-            focusEvent = new UnityEvent();
+    public abstract void Interact();
 
-        if(interactEvent == null)
-            interactEvent = new UnityEvent();
-
-        if(unfocusEvent == null)
-            unfocusEvent = new UnityEvent();
-    }
-
-    
+    public abstract void OnUnfocus();
 }

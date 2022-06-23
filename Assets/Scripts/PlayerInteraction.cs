@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -9,35 +10,60 @@ public class PlayerInteraction : MonoBehaviour
     private Camera _camera;
     private LayerMask _layerMask;
 
-    // Start is called before the first frame update
     void Start()
     {
         _camera = Camera.main;
     }
 
-    // Update is called once per frame
+    private bool test;
+
     void Update()
     {
-        var ray = new Ray(transform.position + 1.8f * Vector3.up, _camera.transform.forward);
-        if(Physics.Raycast(ray, out RaycastHit hit, 10))
+        if(focus != null)
         {
-            var interactable = hit.collider.GetComponent<Interactable>();
-            if(interactable)
+            if(Input.GetButtonUp("Interact"))
             {
-                SetFocus(interactable);
-                return;
+                focus.Interact();
+            }
+            if(!CanInteract(focus.transform))
+            {
+                RemoveFocus();
             }
         }
-        RemoveFocus();
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        var interactable = other.GetComponent<Interactable>();
+        if(interactable != null && interactable != focus && CanInteract(other.transform))
+        {
+            SetFocus(interactable);
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject == focus?.gameObject)
+        {
+            RemoveFocus();
+        }
+    }
+
+    private bool CanInteract(Transform obj)
+    {
+        var direction = obj.position - transform.position;
+        return Vector3.Dot(direction, transform.forward) > 0;
     }
 
     public void SetFocus(Interactable value)
     {
         focus = value;
+        value.OnFocus();
     }
 
     public void RemoveFocus()
     {
+        focus?.OnUnfocus();
         focus = null;
     }
 }

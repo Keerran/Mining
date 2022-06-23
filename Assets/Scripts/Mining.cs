@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Mining : MonoBehaviour
 {
@@ -16,8 +17,19 @@ public class Mining : MonoBehaviour
     private (Vector2, int)[] _mineItems;
     private int[] _covered;
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.SetActiveScene(gameObject.scene);
+    }
+
+
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         _camera = Camera.main;
         _board = new int[xSize][];
@@ -38,7 +50,7 @@ public class Mining : MonoBehaviour
 
         foreach(var (place, name) in model.positions)
         {
-            var pos = new Vector3(place.x - (xSize / 2) - 0.5f, -place.y + (ySize / 2) - 0.5f, 0.1f);
+            var pos = new Vector3(place.x - (xSize / 2), -place.y + (ySize / 2), 0.1f);
             var go = Instantiate(items[name].prefab, pos, Quaternion.identity);
         }
 
@@ -54,11 +66,34 @@ public class Mining : MonoBehaviour
 
     void CreateCell(int i, int j)
     {
-        var pos = new Vector3(i - (xSize / 2), j - (ySize / 2), 0);
+        var pos = new Vector3(i - (xSize / 2) + 0.5f, j - (ySize / 2) + 0.5f, 0);
         var go = Instantiate(prefabs[_board[i][j]], pos, Quaternion.identity);
         var cell = go.AddComponent(typeof(Cell)) as Cell;
         cell.x = i;
         cell.y = j;
+    }
+
+    IEnumerator UnloadScene()
+    {
+        var unloadTask = SceneManager.UnloadSceneAsync(gameObject.scene.buildIndex);
+        while(!unloadTask.isDone)
+            yield return null;
+        var scene = SceneManager.GetActiveScene();
+        foreach(var obj in scene.GetRootGameObjects())
+            obj.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        yield return null;
+    }
+
+    void DropItem(InventoryItem item)
+    {
+        drops.Add(item);
+        Inventory.instance.AddItem(item);
+        if(drops.Count() == _mineItems.Length)
+        {
+            CoroutineManager.instance.LaunchCoroutine(UnloadScene());
+        }
     }
 
     // Update is called once per frame
@@ -89,8 +124,7 @@ public class Mining : MonoBehaviour
                             {
                                 if(--_covered[i] == 0)
                                 {
-                                    drops.Add(items[it].item);
-                                    Inventory.instance.AddItem(items[it].item);
+                                    DropItem(items[it].item);
                                 }
                                 break;
                             }
