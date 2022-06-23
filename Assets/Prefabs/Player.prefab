@@ -132,6 +132,9 @@ MonoBehaviour:
   rotateSpeed: 5
   distToPlayer: 3.5
   focalPoint: {fileID: 165530278}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &1115266510
 MonoBehaviour:
   m_ObjectHideFlags: 0
