@@ -8,15 +8,22 @@ public class Cam : MonoBehaviour
     public float minAngle;
     public float rotateSpeed = 5;
     public float distToPlayer = 10;
-    public Transform focalPoint;
     public LayerMask layerMask;
 
-    private float _xRotation, _yRotation = 10 * Mathf.Deg2Rad;
+    private Transform _focalPoint;
+    private Vector3 _currentLook;
+    private Vector3 _lookVelocity;
+    private Vector3 _moveVelocity;
+    private float _distVelocity;
+    private Rigidbody _playerRb;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        var player = GameObject.FindGameObjectWithTag("Player");
+        _focalPoint = player.transform.Find("Cam Focal Point");
+        _currentLook = _focalPoint.position;
+        _playerRb = player.GetComponent<Rigidbody>();
     }
     
 
@@ -25,27 +32,29 @@ public class Cam : MonoBehaviour
     {
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed * 0.01f;
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed * 0.01f;
+        
+        if(horizontal == 0 && vertical == 0)
+        {
+            transform.position -= _playerRb.velocity * Time.deltaTime;
+        }
+        _currentLook = Vector3.SmoothDamp(_currentLook, _focalPoint.position, ref _lookVelocity, 0.3f);
+        var pos = transform.position - _currentLook;
+        var r = pos.magnitude;
+        var theta = Mathf.Acos(pos.y / r);
+        var phi = Mathf.Atan2(pos.z, pos.x);
 
-        _yRotation += vertical;
-        _yRotation = Mathf.Clamp(_yRotation, minAngle * Mathf.Deg2Rad, maxAngle * Mathf.Deg2Rad);
-        _xRotation = (_xRotation - horizontal) % (2 * Mathf.PI);
+        theta = Mathf.Clamp(theta + vertical, minAngle * Mathf.Deg2Rad, maxAngle * Mathf.Deg2Rad);
+        phi -= horizontal;
 
-        var pos = new Vector3(
-            Mathf.Sin(_yRotation) * Mathf.Cos(_xRotation),
-            Mathf.Cos(_yRotation),
-            Mathf.Sin(_yRotation) * Mathf.Sin(_xRotation)
+        var distance = Mathf.SmoothDamp(r, distToPlayer, ref _distVelocity, 0.3f);
+
+        pos = distance * new Vector3(
+            Mathf.Sin(theta) * Mathf.Cos(phi),
+            Mathf.Cos(theta),
+            Mathf.Sin(theta) * Mathf.Sin(phi)
         );
 
-        transform.position = pos + focalPoint.position;
-        transform.LookAt(focalPoint);
-
-        var ray = new Ray(focalPoint.position, -transform.forward);
-        var distance = distToPlayer;
-        if (Physics.Raycast(ray, out RaycastHit closeZoom, distToPlayer, layerMask))
-        {
-            distance = closeZoom.distance;
-        }
-
-        transform.position = focalPoint.position - transform.forward * (distance - 0.1f);
+        transform.position = pos + _currentLook;
+        transform.LookAt(_currentLook);
     }
 }
