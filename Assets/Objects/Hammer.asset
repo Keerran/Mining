@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: Hammer
   m_EditorClassIdentifier: 
   type: Hammer
+  aoe:
+    data:
+    - data: 010000000200000001000000
+    - data: 020000000200000002000000
+    - data: 010000000200000001000000

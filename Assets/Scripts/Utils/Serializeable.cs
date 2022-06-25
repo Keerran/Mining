@@ -1,11 +1,13 @@
 using System;
+using UnityEditor;
+using UnityEngine;
 
 namespace Serializeable
 {
     [Serializable]
     public class IntArray
     {
-        private int[] data;
+        public int[] data;
 
         public IntArray(int size)
         {
@@ -18,7 +20,7 @@ namespace Serializeable
     [Serializable]
     public class IntMatrix
     {
-        private IntArray[] data;
+        public IntArray[] data;
 
         public IntMatrix(int xSize, int ySize)
         {
@@ -41,5 +43,42 @@ namespace Serializeable
         }
 
         public int[] this[int x] => data[x];
+    }
+
+    [CustomPropertyDrawer(typeof(IntMatrix))]
+    public class IntMatrixDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label) * 3;
+        }
+
+        public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.BeginProperty(rect, label, property);
+            var data = property.FindPropertyRelative("data");
+
+            var rows = data.arraySize;
+            var height = rect.height / rows;
+
+            for(int i = 0; i < rows; i++)
+            {
+                var row = data.GetArrayElementAtIndex(i).FindPropertyRelative("data");
+                var cols = row.arraySize;
+                var width = rect.width / cols;
+                for(int j = 0; j < cols; j++)
+                {
+                    var pos = new Rect(
+                        rect.x + width * j,
+                        rect.y + height * i,
+                        width,
+                        height
+                    );
+                    EditorGUI.PropertyField(pos, row.GetArrayElementAtIndex(j), GUIContent.none);
+                }
+            }
+
+            EditorGUI.EndProperty();
+        }
     }
 }

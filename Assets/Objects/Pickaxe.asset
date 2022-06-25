@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   type: Pickaxe
+  aoe:
+    data:
+    - data: 000000000100000000000000
+    - data: 010000000200000001000000
+    - data: 000000000100000000000000
