@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   type: Pickaxe
-  aoe:
+  buttonImage: {fileID: 2800000, guid: cbb60d01df09362448ea8b59a4f909af, type: 3}
+  area:
     data:
     - data: 000000000100000000000000
     - data: 010000000200000001000000

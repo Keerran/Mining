@@ -8,5 +8,6 @@ using UnityEngine;
 public class MiningTool : ScriptableObject
 {
     public string type;
-    public IntMatrix aoe = new IntMatrix(3, 3);
+    public Texture2D buttonImage;
+    public IntMatrix area = new IntMatrix(3, 3);
 }

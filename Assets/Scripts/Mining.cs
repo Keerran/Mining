@@ -131,15 +131,20 @@ public class Mining : MonoBehaviour
         }
     }
 
+    public void ChangeTool(MiningTool tool)
+    {
+        this.tool = tool;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit) && hit.collider.transform.parent != null)
+            if(Physics.Raycast(ray, out RaycastHit hit))
             {
-                var cell = hit.collider.transform.parent.GetComponent<Cell>();
+                var cell = hit.collider.transform.GetComponentInParent<Cell>();
                 if(cell != null)
                 {
                     var (x, y) = cell;
@@ -149,7 +154,7 @@ public class Mining : MonoBehaviour
                         {
                             if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
                             {
-                                var amount = tool.aoe[i + 1][j + 1];
+                                var amount = tool.area[i + 1][j + 1];
                                 HitCell(x + i, y + j, amount);
                             }
                         }
