@@ -52,7 +52,8 @@ public class Movement : MonoBehaviour
             _gravity += Physics.gravity.y * Time.fixedDeltaTime * 2f;
 
         _rigidbody.velocity = _moveDir * (_magnitude * speed) + _gravity * Vector3.up;
-
+        if(_moveDir.magnitude != 0)
+            transform.rotation = Quaternion.FromToRotation(Vector3.forward, _moveDir);
         var floorMovement = new Vector3(_rigidbody.position.x, FindFloor().y + 1f, _rigidbody.position.z);
 
         if(IsGrounded() && floorMovement != _rigidbody.position && _rigidbody.velocity.y <= 0)

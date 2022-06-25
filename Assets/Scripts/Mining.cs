@@ -25,6 +25,7 @@ public class Mining : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.SetActiveScene(gameObject.scene);
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
 
@@ -102,7 +103,7 @@ public class Mining : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit))
+            if(Physics.Raycast(ray, out RaycastHit hit) && hit.collider.transform.parent != null)
             {
                 var cell = hit.collider.transform.parent.GetComponent<Cell>();
                 if(cell != null)
