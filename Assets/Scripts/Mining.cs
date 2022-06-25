@@ -8,13 +8,16 @@ public class Mining : MonoBehaviour
 {
     public int xSize;
     public int ySize;
+    public GameObject empty;
     public GameObject[] prefabs;
     public MineItem[] items;
     public List<InventoryItem> drops;
+    public MiningTool tool;
 
     private int[][] _board;
     private Camera _camera;
-    private (Vector2, int)[] _mineItems;
+    private GameObject[][] _gameObjects;
+    private (Vector2Int, int)[] _mineItems;
     private int[] _covered;
 
     void OnEnable()
@@ -34,9 +37,11 @@ public class Mining : MonoBehaviour
     {
         _camera = Camera.main;
         _board = new int[xSize][];
+        _gameObjects = new GameObject[xSize][];
         for(int i = 0; i < xSize; i++)
         {
             _board[i] = new int[ySize];
+            _gameObjects[i] = new GameObject[ySize];
             for(int j = 0; j < ySize; j++)
             {
                 _board[i][j] = Random.Range(0, 3);
@@ -67,11 +72,13 @@ public class Mining : MonoBehaviour
 
     void CreateCell(int i, int j)
     {
+        var prefab = _board[i][j] >= 0 ? prefabs[_board[i][j]] : empty;
         var pos = new Vector3(i - (xSize / 2) + 0.5f, j - (ySize / 2) + 0.5f, 0);
-        var go = Instantiate(prefabs[_board[i][j]], pos, Quaternion.identity);
+        var go = Instantiate(prefab, pos, Quaternion.identity);
         var cell = go.AddComponent(typeof(Cell)) as Cell;
         cell.x = i;
         cell.y = j;
+        _gameObjects[i][j] = go;
     }
 
     IEnumerator UnloadScene()
@@ -97,6 +104,33 @@ public class Mining : MonoBehaviour
         }
     }
 
+    void HitCell(int x, int y, int amount)
+    {
+        if(amount == 0)
+            return;
+
+        var go = _gameObjects[x][y];
+        Destroy(go);
+        _board[x][y] -= amount;
+        CreateCell(x, y);
+        if (_board[x][y] < 0)
+        {
+            var vec = new Vector2(x, ySize - y - 1);
+            for (int i = 0; i < _covered.Length; i++)
+            {
+                var (pos, it) = _mineItems[i];
+                if ((pos + Vector2.zero).LessThan(vec) && vec.LessThan(pos + items[it].size - Vector2.one))
+                {
+                    if (--_covered[i] == 0)
+                    {
+                        DropItem(items[it].item);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -109,29 +143,17 @@ public class Mining : MonoBehaviour
                 if(cell != null)
                 {
                     var (x, y) = cell;
-                    var go = cell.gameObject;
-                    if(_board[x][y] > 0)
+                    for(int i = -1; i <= 1; i++)
                     {
-                        _board[x][y]--;
-                        CreateCell(x, y);
-                    }
-                    else
-                    {
-                        var vec = new Vector2(x, ySize - y - 1);
-                        for(int i = 0; i < _covered.Length; i++)
+                        for(int j = -1; j <= 1; j++)
                         {
-                            var (pos, it) = _mineItems[i];
-                            if(pos.LessThan(vec) && vec.LessThan(pos + items[it].size - Vector2.one))
+                            if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
                             {
-                                if(--_covered[i] == 0)
-                                {
-                                    DropItem(items[it].item);
-                                }
-                                break;
+                                var amount = tool.aoe[i + 1][j + 1];
+                                HitCell(x + i, y + j, amount);
                             }
                         }
                     }
-                    Destroy(go);
                 }
             }
         }

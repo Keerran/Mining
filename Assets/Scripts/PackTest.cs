@@ -35,7 +35,7 @@ public class PackTest : MonoBehaviour
             base.OnInspectorGUI();
             if(GUILayout.Button("Run"))
             {
-                var model = new Packing(10, 10,script.objects);
+                var model = new Packing(10, 10, script.objects);
                 model.Place();
             }
         }
