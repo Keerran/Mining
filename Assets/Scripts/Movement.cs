@@ -27,6 +27,11 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GameState.instance.paused)
+        {
+            _moveDir = Vector3.zero;
+            return;
+        }
         Running = Input.GetButton("Run");
         var vertical = Input.GetAxis("Vertical");
         var horizontal = Input.GetAxis("Horizontal");

@@ -30,6 +30,7 @@ public class Cam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GameState.instance.paused) return;
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed * 0.01f;
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed * 0.01f;
         
