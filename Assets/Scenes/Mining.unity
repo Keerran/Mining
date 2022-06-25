@@ -583,6 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 10
   ySize: 10
+  empty: {fileID: 7919374346211012962, guid: 2a4c744fa4cf099408838dae68fa57ad, type: 3}
   prefabs:
   - {fileID: 7919374346211012962, guid: d6b552c2b0c48e6419285582dfc58ae0, type: 3}
   - {fileID: 7919374346211012962, guid: ab3bd95c73588a5418605e9f13ebca45, type: 3}
@@ -594,6 +595,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1496f32ffe73bf44eb65ececfb5cc722, type: 2}
   - {fileID: 11400000, guid: e0587c63962f9874fbbb5b0f7b88b240, type: 2}
   drops: []
+  tool: {fileID: 11400000, guid: b140d5cbf5170094f93ebcc192a4bcd8, type: 2}
 --- !u!4 &1713854527
 Transform:
   m_ObjectHideFlags: 0

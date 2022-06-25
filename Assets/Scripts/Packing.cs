@@ -9,7 +9,7 @@ public class Packing
     public int xSize;
     public int ySize;
     public Vector2[] objects;
-    public List<(Vector2, int)> positions = new List<(Vector2, int)>();
+    public List<(Vector2Int, int)> positions = new List<(Vector2Int, int)>();
 
     // Array of vector 4's which indicate space
     // around cell w/ 2 'vector2's prioritising xdir then ydir
@@ -32,11 +32,11 @@ public class Packing
         }
     }
 
-    (Vector2?, int) PlaceObject()
+    (Vector2Int?, int) PlaceObject()
     {
         var i = Random.Range(0, objects.Length);
         var obj = objects[i];
-        var positions = new List<Vector2>();
+        var positions = new List<Vector2Int>();
         for(int x = 0; x < xSize; x++)
         {
             for(int y = 0; y < ySize; y++)
@@ -45,7 +45,7 @@ public class Packing
                 
                 if((obj.x <= size.x && obj.y <= size.y) || (obj.x <= size.z && obj.y <= size.w))
                 {
-                    positions.Add(new Vector2(x, y));
+                    positions.Add(new Vector2Int(x, y));
                 }
             }
         }
@@ -127,7 +127,7 @@ public class Packing
     {
         var (position, obj) = PlaceObject();
 
-        if(position is Vector2 pos)
+        if(position is Vector2Int pos)
         {
             positions.Add((pos, obj));
             Collapse(pos, objects[obj]);
