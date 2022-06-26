@@ -123,6 +123,7 @@ public class Mining : MonoBehaviour
                 var (pos, it) = _mineItems[i];
                 if ((pos + Vector2.zero).LessThan(vec) && vec.LessThan(pos + items[it].size - Vector2.one))
                 {
+                    Debug.Log(_covered[i]);
                     if (--_covered[i] == 0)
                     {
                         DropItem(items[it].item);

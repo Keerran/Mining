@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class Inventory : ScriptableObject
@@ -28,7 +29,9 @@ public class Inventory : ScriptableObject
 
     public void LoadItems(SaveData save)
     {
-        var itemDict = Resources.FindObjectsOfTypeAll<InventoryItem>().ToDictionary(item => (item.id, item));
+        var allItems = AssetDatabase.FindAssets("t:InventoryItem").Select(AssetDatabase.GUIDToAssetPath)
+                                    .Select(AssetDatabase.LoadAssetAtPath<InventoryItem>);
+        var itemDict = allItems.ToDictionary(item => (item.id, item));
         items = new List<ItemStack>();
         foreach(var (id, amount) in save.itemIds)
         {
