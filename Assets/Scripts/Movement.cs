@@ -8,11 +8,12 @@ public class Movement : MonoBehaviour
 
     public float speed = 7;
     public float jumpPower;
+    public float magnitude { get; private set; }
 
     private Rigidbody _rigidbody;
     private Transform _camera;
     private Vector3 _moveDir;
-    private float _magnitude;
+
     private Vector3 _combinedRaycast;
     private RaycastHit _groundHit;
     private float _gravity;
@@ -27,7 +28,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameState.instance.paused)
+        if (GameState.instance.paused)
         {
             _moveDir = Vector3.zero;
             return;
@@ -39,29 +40,29 @@ public class Movement : MonoBehaviour
         var direction = _camera.forward * vertical + _camera.right * horizontal;
 
         _moveDir = direction.ZeroY().normalized;
-        _magnitude = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
+        magnitude = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
 
-        if (_magnitude < 0.1)
-            _magnitude = 0;
+        if (magnitude < 0.1)
+            magnitude = 0;
         else if (Running)
-            _magnitude *= 2;
+            magnitude *= 2;
 
-        if(Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetButtonDown("Jump") && IsGrounded())
             _gravity = jumpPower;
     }
 
 
     void FixedUpdate()
     {
-        if(!IsGrounded())
+        if (!IsGrounded())
             _gravity += Physics.gravity.y * Time.fixedDeltaTime * 2f;
 
-        _rigidbody.velocity = _moveDir * (_magnitude * speed) + _gravity * Vector3.up;
-        if(_moveDir.magnitude != 0)
+        _rigidbody.velocity = _moveDir * (magnitude * speed) + _gravity * Vector3.up;
+        if (_moveDir.magnitude != 0)
             transform.rotation = Quaternion.FromToRotation(Vector3.forward, _moveDir);
         var floorMovement = new Vector3(_rigidbody.position.x, FindFloor().y + 1f, _rigidbody.position.z);
 
-        if(IsGrounded() && floorMovement != _rigidbody.position && _rigidbody.velocity.y <= 0)
+        if (IsGrounded() && floorMovement != _rigidbody.position && _rigidbody.velocity.y <= 0)
         {
             _rigidbody.MovePosition(floorMovement);
             _gravity = 0;
