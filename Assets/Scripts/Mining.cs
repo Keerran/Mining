@@ -62,13 +62,13 @@ public class Mining : MonoBehaviour
         }
 
         _covered = new int[model.positions.Count()];
+        _mineItems = model.positions.ToArray();
         for(int i = 0; i < _covered.Length; i++)
         {
-            var (pos, name) = model.positions[i];
+            var (pos, name) = _mineItems[i];
             var rect = items[name].size;
             _covered[i] = (int)(rect.x * rect.y);
         }
-        _mineItems = model.positions.ToArray();
     }
 
     void CreateCell(int i, int j)
@@ -108,7 +108,7 @@ public class Mining : MonoBehaviour
 
     void HitCell(int x, int y, int amount)
     {
-        if(amount == 0)
+        if(amount == 0 || _board[x][y] < 0)
             return;
 
         var go = _gameObjects[x][y];
@@ -123,7 +123,6 @@ public class Mining : MonoBehaviour
                 var (pos, it) = _mineItems[i];
                 if ((pos + Vector2.zero).LessThan(vec) && vec.LessThan(pos + items[it].size - Vector2.one))
                 {
-                    Debug.Log(_covered[i]);
                     if (--_covered[i] == 0)
                     {
                         DropItem(items[it].item);
