@@ -14,6 +14,7 @@ public class Mining : MonoBehaviour
     public List<InventoryItem> drops;
     public MiningTool tool;
 
+    private bool _unloading;
     private int[][] _board;
     private Camera _camera;
     private GameObject[][] _gameObjects;
@@ -100,6 +101,7 @@ public class Mining : MonoBehaviour
         Inventory.instance.AddItem(item);
         if(drops.Count() == _mineItems.Length)
         {
+            _unloading = true;
             CoroutineManager.instance.LaunchCoroutine(UnloadScene());
         }
     }
@@ -158,6 +160,8 @@ public class Mining : MonoBehaviour
                             {
                                 var amount = tool.area[i + 1][j + 1];
                                 HitCell(x + i, y + j, amount);
+                                if(_unloading)
+                                    return;
                             }
                         }
                     }

@@ -26,6 +26,16 @@ public class Inventory : ScriptableObject
     [field: SerializeField]
     public List<ItemStack> items { get; private set; } = new List<ItemStack>();
 
+    public void LoadItems(SaveData save)
+    {
+        var itemDict = Resources.FindObjectsOfTypeAll<InventoryItem>().ToDictionary(item => (item.id, item));
+        items = new List<ItemStack>();
+        foreach(var (id, amount) in save.itemIds)
+        {
+            AddItem(itemDict[id], amount);
+        }
+    }
+
     public void AddItem(InventoryItem item, int amount = 1)
     {
         if (_stacks.TryGetValue(item, out ItemStack value))

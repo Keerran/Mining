@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -53,5 +54,10 @@ public static class Extensions
     public static bool LessThan(this Vector2 vec, Vector2 other)
     {
         return vec.x <= other.x && vec.y <= other.y;
+    }
+
+    public static Dictionary<T, U> ToDictionary<S, T, U>(this IEnumerable<S> list, Func<S, (T, U)> selector)
+    {
+        return list.Select(selector).ToDictionary(o => o.Item1, o => o.Item2);
     }
 }

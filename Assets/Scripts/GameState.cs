@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using MessagePack;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,6 +25,11 @@ public class GameState : ScriptableObject
         }
     }
 
+    void Awake()
+    {
+        Load();
+    }
+
     public UnityEvent<bool> onPauseChange = new UnityEvent<bool>();
 
     [SerializeField]
@@ -39,6 +46,29 @@ public class GameState : ScriptableObject
 
     public void Save()
     {
+        var data = new SaveData
+        {
+            itemIds = Inventory.instance.items.ToDictionary(stack => (stack.item.id, stack.size))
+        };
+
+        var bytes = MessagePackSerializer.Serialize(data);
+        var path = Application.persistentDataPath + "/save.bin";
+        File.WriteAllBytes(path, bytes);
+        Debug.Log("Save complete.");
+    }
+
+    public void Load()
+    {
+        var path = Application.persistentDataPath + "/save.bin";
+        if(File.Exists(path))
+        {
+            var bytes = File.ReadAllBytes(path);
+            var data = MessagePackSerializer.Deserialize<SaveData>(bytes);
+
+            Inventory.instance.LoadItems(data);
+
+            Debug.Log("Load complete");
+        }
     }
 
     #if UNITY_EDITOR
