@@ -6,7 +6,8 @@ public class Movement : MonoBehaviour
 {
     public bool Running { get; private set; }
 
-    public float speed = 7;
+    public float speed = 4;
+    public float runMultiplier = 3;
     public float jumpPower;
     public float magnitude { get; private set; }
 
@@ -45,7 +46,7 @@ public class Movement : MonoBehaviour
         if (magnitude < 0.1)
             magnitude = 0;
         else if (Running)
-            magnitude *= 2;
+            magnitude *= runMultiplier;
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
             _gravity = jumpPower;

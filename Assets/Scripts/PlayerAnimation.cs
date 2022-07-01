@@ -17,6 +17,8 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _animator.SetFloat("Speed", _movement.magnitude);
+        _animator.SetFloat("MoveSpeed", _movement.magnitude * _movement.speed);
+        // _animator.SetFloat("InputMagnitude", _movement.magnitude);
+        _animator.SetBool("IsRunning", _movement.Running);
     }
 }
