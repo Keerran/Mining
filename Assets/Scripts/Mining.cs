@@ -13,6 +13,7 @@ public class Mining : MonoBehaviour
     public MineItem[] items;
     public List<InventoryItem> drops;
     public MiningTool tool;
+    public GameObject spot;
 
     private bool _unloading;
     private int[][] _board;
@@ -32,8 +33,6 @@ public class Mining : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-
-    // Start is called before the first frame update
     void Start()
     {
         _camera = Camera.main;
@@ -84,6 +83,7 @@ public class Mining : MonoBehaviour
 
     IEnumerator UnloadScene()
     {
+        Destroy(spot);
         var unloadTask = SceneManager.UnloadSceneAsync(gameObject.scene.buildIndex);
         while(!unloadTask.isDone)
             yield return null;

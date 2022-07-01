@@ -6,13 +6,16 @@ using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
 {
+    public int maxSpots;
+    public int spots;
     public float cellScale;
     public int xSize, ySize;
     public TextAsset rules;
     public Tile[] tiles;
+    public GameObject mineSpot;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         var prefabs = new Dictionary<string, GameObject>();
         foreach(var tile in tiles)
@@ -51,10 +54,9 @@ public class LevelBuilder : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     [Serializable]

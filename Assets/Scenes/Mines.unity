@@ -191,9 +191,11 @@ GameObject:
   - component: {fileID: 1411039064}
   - component: {fileID: 1411039063}
   - component: {fileID: 1411039065}
+  - component: {fileID: 1411039067}
+  - component: {fileID: 1411039066}
   m_Layer: 0
   m_Name: Game Manager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -210,6 +212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7febb5d00b97a444b9e87979d002805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSpots: 20
+  spots: 0
   cellScale: 2
   xSize: 10
   ySize: 10
@@ -227,6 +231,7 @@ MonoBehaviour:
     prefab: {fileID: 284961482603735475, guid: fabc26f6b1707a44fb8839b458db7c81, type: 3}
   - name: deadend
     prefab: {fileID: 8448364369850611485, guid: 87c327900c960aa478f2bf2be18dc717, type: 3}
+  mineSpot: {fileID: 3381831945650024594, guid: 5105794bf94aa504f8ee69f0472bd991, type: 3}
 --- !u!4 &1411039064
 Transform:
   m_ObjectHideFlags: 0
@@ -252,6 +257,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c4e2ec21be338a49acd0a12e72416d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1411039066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411039062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69639a530716d5f4d9492fd4ddb2993a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenuPrefab: {fileID: 8072611535299854691, guid: 124f1deeb636b1c4bb759322324fc7cb, type: 3}
+--- !u!114 &1411039067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411039062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be80b5b79b0fca41923bcad84f4f326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1665875998

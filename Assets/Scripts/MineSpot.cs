@@ -23,6 +23,8 @@ public class MineSpot : Interactable
         while(!loadTask.isDone)
             yield return null;
 
+        var controller = GameObject.FindGameObjectWithTag("MinigameController");
+        controller.GetComponent<Mining>().spot = gameObject;
         Cursor.lockState = CursorLockMode.None;
         gameObject.SetActive(false);
     }

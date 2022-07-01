@@ -830,7 +830,7 @@ GameObject:
   - component: {fileID: 1713854526}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: GameController
+  m_TagString: MinigameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -862,6 +862,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0587c63962f9874fbbb5b0f7b88b240, type: 2}
   drops: []
   tool: {fileID: 11400000, guid: b140d5cbf5170094f93ebcc192a4bcd8, type: 2}
+  spot: {fileID: 0}
 --- !u!4 &1713854527
 Transform:
   m_ObjectHideFlags: 0

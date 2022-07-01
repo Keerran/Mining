@@ -60,4 +60,24 @@ public static class Extensions
     {
         return list.Select(selector).ToDictionary(o => o.Item1, o => o.Item2);
     }
+
+    public static T Random<T>(this T[] arr)
+    {
+        if(arr.Length == 0)
+            return default(T);
+        return arr[UnityEngine.Random.Range(0, arr.Length)];
+    }
+
+    public static bool Raycast(this Collider[] cols, Ray ray, out RaycastHit hit, float distance)
+    {
+        foreach(var col in cols)
+        {
+            if(col.Raycast(ray, out hit, distance))
+            {
+                return true;
+            }
+        }
+        hit = new RaycastHit();
+        return false;
+    }
 }
