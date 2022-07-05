@@ -141,7 +141,7 @@ public class Mining : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameState.instance.paused) return;
+        if(GameState.instance.inputBlocked) return;
 
         if(Input.GetMouseButtonDown(0))
         {

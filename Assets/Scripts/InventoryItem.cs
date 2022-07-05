@@ -7,5 +7,5 @@ public class InventoryItem : ScriptableObject
 {
     public string id;
     public string displayName;
-    public Texture2D image;
+    public Sprite image;
 }

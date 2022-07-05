@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class StateManager : MonoBehaviour
 {
-    public GameObject pauseMenuPrefab;
-
-    private GameObject _pauseMenu;
+    public GameObject pauseMenu;
+    public GameObject inventory;
 
     // Start is called before the first frame update
     void Start()
@@ -16,22 +15,26 @@ public class StateManager : MonoBehaviour
 
     void Pause(bool paused)
     {
-        if(paused)
-        {
-            _pauseMenu = Instantiate(pauseMenuPrefab, Vector3.zero, Quaternion.identity);
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else
-        {
-            Destroy(_pauseMenu);
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        pauseMenu.SetActive(paused);
+        Cursor.lockState = paused
+            ? CursorLockMode.None
+            : CursorLockMode.Locked;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause"))
             GameState.instance.paused = !GameState.instance.paused;
+
+        if (Input.GetButtonDown("Inventory"))
+        {
+            var open = !inventory.activeSelf;
+            GameState.instance.inputBlocked = open;
+            inventory.SetActive(open);
+            Cursor.lockState = open
+                ? CursorLockMode.None
+                : CursorLockMode.Locked;
+        }
     }
 }

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: sspif
   displayName: Sspif
-  image: {fileID: 2800000, guid: 2f7eb4fab92eb1949ac726283fb094b9, type: 3}
+  image: {fileID: 21300000, guid: 2f7eb4fab92eb1949ac726283fb094b9, type: 3}

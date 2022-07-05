@@ -44,6 +44,13 @@ public class GameState : ScriptableObject
         }
     }
 
+    private bool _inputBlocked;
+    public bool inputBlocked
+    {
+        get => _inputBlocked || paused;
+        set => _inputBlocked = value;
+    }
+
     public void Save()
     {
         var data = new SaveData

@@ -29,8 +29,9 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameState.instance.paused)
+        if (GameState.instance.inputBlocked)
         {
+            magnitude = 0;
             _moveDir = Vector3.zero;
             return;
         }

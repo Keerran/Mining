@@ -80,4 +80,9 @@ public static class Extensions
         hit = new RaycastHit();
         return false;
     }
+
+    public static IEnumerable<(int, T)> Enumerate<T>(this IEnumerable<T> arr)
+    {
+        return arr.Select((v, i) => (i, v));
+    }
 }
