@@ -30,10 +30,11 @@ public class Cam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameState.instance.paused) return;
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed * 0.01f;
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed * 0.01f;
-        
+        if(GameState.instance.inputBlocked)
+            horizontal = vertical = 0;
+
         if(horizontal == 0 && vertical == 0)
         {
             transform.position -= _playerRb.velocity * Time.deltaTime;
@@ -47,7 +48,7 @@ public class Cam : MonoBehaviour
         theta = Mathf.Clamp(theta + vertical, minAngle * Mathf.Deg2Rad, maxAngle * Mathf.Deg2Rad);
         phi -= horizontal;
 
-        var distance = Mathf.SmoothDamp(r, distToPlayer, ref _distVelocity, 0.3f);
+        var distance = Mathf.SmoothDamp(r, distToPlayer, ref _distVelocity, 0.1f);
 
         pos = distance * new Vector3(
             Mathf.Sin(theta) * Mathf.Cos(phi),
@@ -55,7 +56,12 @@ public class Cam : MonoBehaviour
             Mathf.Sin(theta) * Mathf.Sin(phi)
         );
 
-        transform.position = pos + _currentLook;
+        var targetPos = pos + _currentLook;
+        var ray = new Ray(_currentLook, pos);
+        if(Physics.Raycast(ray, out var hit, pos.magnitude, layerMask))
+            targetPos = hit.point;
+        
+        transform.position = targetPos;
         transform.LookAt(_currentLook);
     }
 }
