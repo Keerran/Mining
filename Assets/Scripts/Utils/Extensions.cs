@@ -85,4 +85,11 @@ public static class Extensions
     {
         return arr.Select((v, i) => (i, v));
     }
+
+    public static int ApplyDeadzone(this float value, float amount)
+    {
+        if(Mathf.Abs(value) < amount)
+            return 0;
+        return (int)Mathf.Sign(value);
+    }
 }

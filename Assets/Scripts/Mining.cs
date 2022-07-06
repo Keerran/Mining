@@ -14,6 +14,7 @@ public class Mining : MonoBehaviour
     public List<InventoryItem> drops;
     public MiningTool tool;
     public GameObject spot;
+    public Transform focusUI;
 
     private bool _unloading;
     private int[][] _board;
@@ -21,6 +22,9 @@ public class Mining : MonoBehaviour
     private GameObject[][] _gameObjects;
     private (Vector2Int, int)[] _mineItems;
     private int[] _covered;
+    private Vector2Int _focus;
+    private Vector3 _lastMousePos;
+    private float _cooldown;
 
     void OnEnable()
     {
@@ -70,10 +74,15 @@ public class Mining : MonoBehaviour
         }
     }
 
+    Vector3 GetPosition(int i, int j)
+    {
+        return new Vector3(i - (xSize / 2) + 0.5f, j - (ySize / 2) + 0.5f, 0);
+    }
+
     void CreateCell(int i, int j)
     {
         var prefab = _board[i][j] >= 0 ? prefabs[_board[i][j]] : empty;
-        var pos = new Vector3(i - (xSize / 2) + 0.5f, j - (ySize / 2) + 0.5f, 0);
+        var pos = GetPosition(i, j);
         var go = Instantiate(prefab, pos, Quaternion.identity);
         var cell = go.AddComponent(typeof(Cell)) as Cell;
         cell.x = i;
@@ -141,29 +150,65 @@ public class Mining : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _cooldown -= Time.deltaTime;
         if(GameState.instance.inputBlocked) return;
-
-        if(Input.GetMouseButtonDown(0))
+        if(Input.mousePosition != _lastMousePos)
         {
+            Debug.Log("DONE");
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            var found = false;
             if(Physics.Raycast(ray, out RaycastHit hit))
             {
                 var cell = hit.collider.transform.GetComponentInParent<Cell>();
                 if(cell != null)
                 {
-                    var (x, y) = cell;
-                    for(int i = -1; i <= 1; i++)
+                    _focus = new Vector2Int(cell.x, cell.y);
+                    focusUI.position = GetPosition(cell.x, cell.y) + Vector3.back;
+                    found = true;
+                }
+            }
+            if(!found)
+            {
+                _focus = new Vector2Int(-1, 0);
+                focusUI.position = new Vector3(-15, -15, -1);
+            }
+            _lastMousePos = Input.mousePosition;
+        }
+        else
+        {
+            var vertical = Input.GetAxis("Vertical").ApplyDeadzone(0.5f);
+            var horizontal = Input.GetAxis("Horizontal").ApplyDeadzone(0.5f);
+
+            if(horizontal != 0 || vertical != 0)
+            {
+                var pos = new Vector2Int(_focus.x + horizontal, _focus.y + vertical);
+
+                if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize) && _cooldown <= 0)
+                {
+                    _focus = pos;
+                    focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
+                    _cooldown = 0.1f;
+                }
+            }
+            else
+            {
+                _cooldown = 0;
+            }
+        }
+
+        if((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Jump")) && _focus.x != -1)
+        {
+            var (x, y) = (_focus.x, _focus.y);
+            for(int i = -1; i <= 1; i++)
+            {
+                for(int j = -1; j <= 1; j++)
+                {
+                    if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
                     {
-                        for(int j = -1; j <= 1; j++)
-                        {
-                            if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
-                            {
-                                var amount = tool.area[i + 1][j + 1];
-                                HitCell(x + i, y + j, amount);
-                                if(_unloading)
-                                    return;
-                            }
-                        }
+                        var amount = tool.area[i + 1][j + 1];
+                        HitCell(x + i, y + j, amount);
+                        if(_unloading)
+                            return;
                     }
                 }
             }
