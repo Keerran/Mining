@@ -10,12 +10,28 @@ public class Cam : MonoBehaviour
     public float distToPlayer = 10;
     public LayerMask layerMask;
 
+    private Controls _controls;
     private Transform _focalPoint;
     private Vector3 _currentLook;
     private Vector3 _lookVelocity;
     private Vector3 _moveVelocity;
     private float _distVelocity;
     private Rigidbody _playerRb;
+
+    void Awake()
+    {
+        _controls = new Controls();
+    }
+
+    void OnEnable()
+    {
+        _controls.Enable();
+    }
+
+    void OnDisable()
+    {
+        _controls.Disable();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +46,12 @@ public class Cam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontal = Input.GetAxis("Mouse X") * rotateSpeed * 0.01f;
-        float vertical = Input.GetAxis("Mouse Y") * rotateSpeed * 0.01f;
-        if(GameState.instance.inputBlocked)
-            horizontal = vertical = 0;
+        var input = _controls.Player.Look.ReadValue<Vector2>() * rotateSpeed * 0.0005f;
 
-        if(horizontal == 0 && vertical == 0)
+        if(GameState.instance.inputBlocked)
+            input = Vector2.zero;
+
+        if(input == Vector2.zero)
         {
             transform.position -= _playerRb.velocity * Time.deltaTime;
         }
@@ -45,8 +61,8 @@ public class Cam : MonoBehaviour
         var theta = Mathf.Acos(pos.y / r);
         var phi = Mathf.Atan2(pos.z, pos.x);
 
-        theta = Mathf.Clamp(theta + vertical, minAngle * Mathf.Deg2Rad, maxAngle * Mathf.Deg2Rad);
-        phi -= horizontal;
+        theta = Mathf.Clamp(theta + input.y, minAngle * Mathf.Deg2Rad, maxAngle * Mathf.Deg2Rad);
+        phi -= input.x;
 
         var distance = Mathf.SmoothDamp(r, distToPlayer, ref _distVelocity, 0.1f);
 

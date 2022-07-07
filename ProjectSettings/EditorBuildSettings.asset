@@ -8,4 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mining.unity
     guid: 5390091ccf11e0b4b90e7c8691414f1e
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 62024d1880556f843a912b4d543ccb92, type: 2}

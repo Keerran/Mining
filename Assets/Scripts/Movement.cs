@@ -4,26 +4,45 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public bool Running { get; private set; }
+    public bool Running => _controls.Player.Run.IsPressed();
 
     public float speed = 4;
     public float runMagnitude = 3;
     public float jumpPower;
     public float magnitude { get; private set; }
 
+    private Controls _controls;
     private Rigidbody _rigidbody;
     private Transform _camera;
     private Vector3 _moveDir;
-
     private Vector3 _combinedRaycast;
     private RaycastHit _groundHit;
     private float _gravity;
+
+    void Awake()
+    {
+        _controls = new Controls();
+        _controls.Player.Jump.performed += ctx => {
+            if (IsGrounded())
+                _gravity = jumpPower;
+        };
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _camera = Camera.main.transform;
+    }
+
+    void OnEnable()
+    {
+        _controls.Enable();
+    }
+
+    void OnDisable()
+    {
+        _controls.Disable();
     }
 
     // Update is called once per frame
@@ -35,22 +54,18 @@ public class Movement : MonoBehaviour
             _moveDir = Vector3.zero;
             return;
         }
-        Running = Input.GetButton("Run");
-        var vertical = Input.GetAxis("Vertical");
-        var horizontal = Input.GetAxis("Horizontal");
 
-        var direction = _camera.forward * vertical + _camera.right * horizontal;
+        var move = _controls.Player.Move.ReadValue<Vector2>();
+
+        var direction = _camera.forward * move.y + _camera.right * move.x;
 
         _moveDir = direction.ZeroY().normalized;
-        magnitude = Mathf.Clamp01(Mathf.Abs(vertical) + Mathf.Abs(horizontal));
+        magnitude = Mathf.Clamp01(Mathf.Abs(move.y) + Mathf.Abs(move.x));
 
         if (magnitude < 0.1)
             magnitude = 0;
         else if (Running)
             magnitude = runMagnitude;
-
-        if (Input.GetButtonDown("Jump") && IsGrounded())
-            _gravity = jumpPower;
     }
 
 

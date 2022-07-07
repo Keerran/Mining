@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class Mining : MonoBehaviour
@@ -16,6 +17,7 @@ public class Mining : MonoBehaviour
     public GameObject spot;
     public Transform focusUI;
 
+    private Controls _controls;
     private bool _unloading;
     private int[][] _board;
     private Camera _camera;
@@ -23,12 +25,36 @@ public class Mining : MonoBehaviour
     private (Vector2Int, int)[] _mineItems;
     private int[] _covered;
     private Vector2Int _focus;
-    private Vector3 _lastMousePos;
-    private float _cooldown;
+    private Vector2 _lastMousePos;
+
+    void Awake()
+    {
+        _controls = new Controls();
+        _controls.Mining.Move.performed += ctx => {
+            var move = Vector2Int.RoundToInt(ctx.ReadValue<Vector2>());
+
+            if(move != Vector2Int.zero)
+            {
+                var pos = new Vector2Int(_focus.x + move.x, _focus.y + move.y);
+
+                if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize))
+                {
+                    _focus = pos;
+                    focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
+                }
+            }
+        };
+    }
 
     void OnEnable()
     {
+        _controls.Enable();
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        _controls.Disable();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -150,12 +176,11 @@ public class Mining : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _cooldown -= Time.deltaTime;
         if(GameState.instance.inputBlocked) return;
-        if(Input.mousePosition != _lastMousePos)
+        var mousePos = Mouse.current.position.ReadValue();
+        if(mousePos != _lastMousePos)
         {
-            Debug.Log("DONE");
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
+            var ray = _camera.ScreenPointToRay(mousePos);
             var found = false;
             if(Physics.Raycast(ray, out RaycastHit hit))
             {
@@ -172,28 +197,7 @@ public class Mining : MonoBehaviour
                 _focus = new Vector2Int(-1, 0);
                 focusUI.position = new Vector3(-15, -15, -1);
             }
-            _lastMousePos = Input.mousePosition;
-        }
-        else
-        {
-            var vertical = Input.GetAxis("Vertical").ApplyDeadzone(0.5f);
-            var horizontal = Input.GetAxis("Horizontal").ApplyDeadzone(0.5f);
-
-            if(horizontal != 0 || vertical != 0)
-            {
-                var pos = new Vector2Int(_focus.x + horizontal, _focus.y + vertical);
-
-                if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize) && _cooldown <= 0)
-                {
-                    _focus = pos;
-                    focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
-                    _cooldown = 0.1f;
-                }
-            }
-            else
-            {
-                _cooldown = 0;
-            }
+            _lastMousePos = mousePos;
         }
 
         if((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Jump")) && _focus.x != -1)

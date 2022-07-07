@@ -8,23 +8,36 @@ public class PlayerInteraction : MonoBehaviour
     public Interactable focus = null;
 
     private Camera _camera;
-    private LayerMask _layerMask;
+    private Controls _controls;
+
+    void Awake()
+    {
+        _controls = new Controls();
+        _controls.Player.Interact.performed += ctx => {
+            if(focus != null)
+                focus.Interact();
+        };
+    }
+
+    void OnEnable()
+    {
+        _controls.Enable();
+    }
+
+    void OnDisable()
+    {
+        _controls.Disable();
+    }
 
     void Start()
     {
         _camera = Camera.main;
     }
 
-    private bool test;
-
     void Update()
     {
         if(focus != null)
         {
-            if(Input.GetButtonUp("Interact"))
-            {
-                focus.Interact();
-            }
             if(!CanInteract(focus.transform))
             {
                 RemoveFocus();
