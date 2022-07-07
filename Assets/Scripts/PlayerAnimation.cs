@@ -19,6 +19,13 @@ public class PlayerAnimation : MonoBehaviour
     {
         _animator.SetFloat("MoveSpeed", _movement.magnitude * _movement.speed);
         // _animator.SetFloat("InputMagnitude", _movement.magnitude);
-        _animator.SetBool("IsRunning", _movement.Running);
+        if (_movement.magnitude > 0.1)
+        {
+            _animator.SetBool("IsRunning", _movement.Running);
+        }
+        else
+        {
+            _animator.SetBool("IsRunning", false);
+        }
     }
 }
