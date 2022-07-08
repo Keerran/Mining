@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class CoroutineManager : MonoBehaviour
 {
-    public static CoroutineManager instance { get; private set; }
+    private static CoroutineManager _instance;
 
     void Awake()
     {
-        if(instance == null)
-            instance = this;
+        if(_instance == null)
+            _instance = this;
         else
             Destroy(this);
     }
 
-    public void LaunchCoroutine(IEnumerator coroutine)
+    public static void LaunchCoroutine(IEnumerator coroutine)
     {
-        StartCoroutine(coroutine);
+        _instance.StartCoroutine(coroutine);
     }
 }

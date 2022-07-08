@@ -873,6 +873,24 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Mine"",
+                    ""type"": ""Button"",
+                    ""id"": ""43d19576-7f6a-473c-8db2-6ed2863d7fa5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Tools"",
+                    ""type"": ""Button"",
+                    ""id"": ""c3d7fb29-6b8e-48a2-a00d-703756b4915b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1029,6 +1047,39 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2ade0ba1-0eee-4bb4-8d66-1ce56ce17833"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Mine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01756944-0ef7-43d4-8fea-7b7392f6b65f"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Tools"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e68d468d-57f2-47a8-ba41-8decd95b036a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Mine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1121,6 +1172,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         // Mining
         m_Mining = asset.FindActionMap("Mining", throwIfNotFound: true);
         m_Mining_Move = m_Mining.FindAction("Move", throwIfNotFound: true);
+        m_Mining_Mine = m_Mining.FindAction("Mine", throwIfNotFound: true);
+        m_Mining_Tools = m_Mining.FindAction("Tools", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1375,11 +1428,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Mining;
     private IMiningActions m_MiningActionsCallbackInterface;
     private readonly InputAction m_Mining_Move;
+    private readonly InputAction m_Mining_Mine;
+    private readonly InputAction m_Mining_Tools;
     public struct MiningActions
     {
         private @Controls m_Wrapper;
         public MiningActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Mining_Move;
+        public InputAction @Mine => m_Wrapper.m_Mining_Mine;
+        public InputAction @Tools => m_Wrapper.m_Mining_Tools;
         public InputActionMap Get() { return m_Wrapper.m_Mining; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1392,6 +1449,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Move.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnMove;
                 @Move.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnMove;
                 @Move.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnMove;
+                @Mine.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
+                @Mine.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
+                @Mine.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
+                @Tools.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
+                @Tools.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
+                @Tools.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
             }
             m_Wrapper.m_MiningActionsCallbackInterface = instance;
             if (instance != null)
@@ -1399,6 +1462,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Mine.started += instance.OnMine;
+                @Mine.performed += instance.OnMine;
+                @Mine.canceled += instance.OnMine;
+                @Tools.started += instance.OnTools;
+                @Tools.performed += instance.OnTools;
+                @Tools.canceled += instance.OnTools;
             }
         }
     }
@@ -1475,5 +1544,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     public interface IMiningActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnMine(InputAction.CallbackContext context);
+        void OnTools(InputAction.CallbackContext context);
     }
 }

@@ -28,24 +28,49 @@ public class Mining : MonoBehaviour
 
     void Awake()
     {
-        StateManager.controls.Mining.Move.performed += ctx => {
-            var move = Vector2Int.RoundToInt(ctx.ReadValue<Vector2>());
+        var controls = StateManager.controls;
+        controls.Mining.Move.performed += MoveFocus;
+        controls.Mining.Mine.performed += Mine;
+    }
 
-            if(move != Vector2Int.zero)
+    void MoveFocus(InputAction.CallbackContext ctx) {
+        var move = Vector2Int.RoundToInt(ctx.ReadValue<Vector2>());
+
+        if(move != Vector2Int.zero)
+        {
+            Vector2Int pos;
+            if(_focus.x == -1)
+                pos = new Vector2Int(xSize - 1, ySize - 1) * (Vector2Int.one - move) / 2;
+            else
+                pos = new Vector2Int(_focus.x + move.x, _focus.y + move.y);
+
+            if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize))
             {
-                Vector2Int pos;
-                if(_focus.x == -1)
-                    pos = new Vector2Int(xSize - 1, ySize - 1) * (Vector2Int.one - move) / 2;
-                else
-                    pos = new Vector2Int(_focus.x + move.x, _focus.y + move.y);
+                _focus = pos;
+                focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
+            }
+        }
+    }
 
-                if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize))
+    void Mine(InputAction.CallbackContext ctx)
+    {
+        if(_focus.x != -1)
+        {
+            var (x, y) = (_focus.x, _focus.y);
+            for(int i = -1; i <= 1; i++)
+            {
+                for(int j = -1; j <= 1; j++)
                 {
-                    _focus = pos;
-                    focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
+                    if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
+                    {
+                        var amount = tool.area[i + 1][j + 1];
+                        HitCell(x + i, y + j, amount);
+                        if(_unloading)
+                            return;
+                    }
                 }
             }
-        };
+        }
     }
 
     void OnEnable()
@@ -57,6 +82,13 @@ public class Mining : MonoBehaviour
     {
         SceneManager.SetActiveScene(gameObject.scene);
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        var controls = StateManager.controls;
+        controls.Mining.Move.performed -= MoveFocus;
+        controls.Mining.Mine.performed -= Mine;
     }
 
     void Start()
@@ -134,7 +166,7 @@ public class Mining : MonoBehaviour
         if(drops.Count() == _mineItems.Length)
         {
             _unloading = true;
-            CoroutineManager.instance.LaunchCoroutine(UnloadScene());
+            CoroutineManager.LaunchCoroutine(UnloadScene());
         }
     }
 
@@ -195,24 +227,6 @@ public class Mining : MonoBehaviour
                 focusUI.position = new Vector3(-15, -15, -1);
             }
             _lastMousePos = mousePos;
-        }
-
-        if((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Jump")) && _focus.x != -1)
-        {
-            var (x, y) = (_focus.x, _focus.y);
-            for(int i = -1; i <= 1; i++)
-            {
-                for(int j = -1; j <= 1; j++)
-                {
-                    if(Utils.Between(x + i, 0, xSize) && Utils.Between(y + j, 0, ySize))
-                    {
-                        var amount = tool.area[i + 1][j + 1];
-                        HitCell(x + i, y + j, amount);
-                        if(_unloading)
-                            return;
-                    }
-                }
-            }
         }
     }
 }
