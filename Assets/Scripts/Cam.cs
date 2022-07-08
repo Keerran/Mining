@@ -18,21 +18,6 @@ public class Cam : MonoBehaviour
     private float _distVelocity;
     private Rigidbody _playerRb;
 
-    void Awake()
-    {
-        _controls = new Controls();
-    }
-
-    void OnEnable()
-    {
-        _controls.Enable();
-    }
-
-    void OnDisable()
-    {
-        _controls.Disable();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +25,7 @@ public class Cam : MonoBehaviour
         _focalPoint = player.transform.Find("Cam Focal Point");
         _currentLook = _focalPoint.position;
         _playerRb = player.GetComponent<Rigidbody>();
+        _controls = StateManager.controls;
     }
     
 

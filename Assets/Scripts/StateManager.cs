@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateManager : MonoBehaviour
 {
     public GameObject pauseMenu;
     public GameObject inventory;
 
-    private Controls _controls;
+    public static Controls controls { get; private set; }
 
     void Awake()
     {
-        _controls = new Controls();
-        _controls.Player.Pause.performed += ctx =>
+        controls = new Controls();
+        controls.UI.Pause.performed += ctx =>
             GameState.instance.paused = !GameState.instance.paused;
-        _controls.Player.Inventory.performed += ctx => {
+        controls.Player.Inventory.performed += ctx => {
             if(GameState.instance.paused)
                 return;
             var open = !inventory.activeSelf;
@@ -24,16 +25,21 @@ public class StateManager : MonoBehaviour
                 ? CursorLockMode.None
                 : CursorLockMode.Locked;
         };
+        Cursor.lockState = CursorLockMode.Locked;
+        controls.Player.Cursor.performed += ctx => 
+            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked
+                ? CursorLockMode.None
+                : CursorLockMode.Locked;
     }
 
     void OnEnable()
     {
-        _controls.Enable();
+        controls.Enable();
     }
 
     void OnDisable()
     {
-        _controls.Disable();
+        controls.Disable();
     }
 
     // Start is called before the first frame update

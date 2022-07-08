@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class MineSpot : Interactable
@@ -26,6 +27,7 @@ public class MineSpot : Interactable
         var controller = GameObject.FindGameObjectWithTag("MinigameController");
         controller.GetComponent<Mining>().spot = gameObject;
         Cursor.lockState = CursorLockMode.None;
+        StateManager.controls.Player.Disable();
         gameObject.SetActive(false);
     }
 

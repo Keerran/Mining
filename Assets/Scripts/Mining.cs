@@ -17,7 +17,6 @@ public class Mining : MonoBehaviour
     public GameObject spot;
     public Transform focusUI;
 
-    private Controls _controls;
     private bool _unloading;
     private int[][] _board;
     private Camera _camera;
@@ -29,13 +28,16 @@ public class Mining : MonoBehaviour
 
     void Awake()
     {
-        _controls = new Controls();
-        _controls.Mining.Move.performed += ctx => {
+        StateManager.controls.Mining.Move.performed += ctx => {
             var move = Vector2Int.RoundToInt(ctx.ReadValue<Vector2>());
 
             if(move != Vector2Int.zero)
             {
-                var pos = new Vector2Int(_focus.x + move.x, _focus.y + move.y);
+                Vector2Int pos;
+                if(_focus.x == -1)
+                    pos = new Vector2Int(xSize - 1, ySize - 1) * (Vector2Int.one - move) / 2;
+                else
+                    pos = new Vector2Int(_focus.x + move.x, _focus.y + move.y);
 
                 if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize))
                 {
@@ -48,13 +50,7 @@ public class Mining : MonoBehaviour
 
     void OnEnable()
     {
-        _controls.Enable();
         SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        _controls.Disable();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -127,6 +123,7 @@ public class Mining : MonoBehaviour
             obj.SetActive(true);
 
         Cursor.lockState = CursorLockMode.Locked;
+        StateManager.controls.Player.Enable();
         yield return null;
     }
 

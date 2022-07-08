@@ -19,30 +19,16 @@ public class Movement : MonoBehaviour
     private RaycastHit _groundHit;
     private float _gravity;
 
-    void Awake()
-    {
-        _controls = new Controls();
-        _controls.Player.Jump.performed += ctx => {
-            if (IsGrounded())
-                _gravity = jumpPower;
-        };
-    }
-
     // Start is called before the first frame update
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _camera = Camera.main.transform;
-    }
-
-    void OnEnable()
-    {
-        _controls.Enable();
-    }
-
-    void OnDisable()
-    {
-        _controls.Disable();
+        _controls = StateManager.controls;
+        _controls.Player.Jump.performed += ctx => {
+            if (IsGrounded())
+                _gravity = jumpPower;
+        };
     }
 
     // Update is called once per frame
