@@ -37,10 +37,10 @@ public class Cam : MonoBehaviour
         if (GameState.instance.inputBlocked)
             input = Vector2.zero;
 
-        if (input == Vector2.zero)
-        {
-            transform.position -= _playerRb.velocity * Time.deltaTime;
-        }
+        // if (input != Vector2.zero)
+        // {
+        //     transform.position += _playerRb.velocity * Time.deltaTime;
+        // }
         _currentLook = Vector3.SmoothDamp(_currentLook, _focalPoint.position, ref _lookVelocity, smoothLookTime);
 
         // Camera position relative to current look in spherical coordinates
@@ -68,7 +68,10 @@ public class Cam : MonoBehaviour
         if (Physics.Raycast(ray, out var hit, pos.magnitude, layerMask))
             targetPos = hit.point;
 
+        test.position = _currentLook;
         transform.position = targetPos;
         transform.LookAt(_currentLook);
     }
+
+    public Transform test;
 }

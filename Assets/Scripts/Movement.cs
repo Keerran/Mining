@@ -26,7 +26,7 @@ public class Movement : MonoBehaviour
         _camera = Camera.main.transform;
         _controls = StateManager.controls;
         _controls.Player.Jump.performed += ctx => {
-            if (IsGrounded())
+            if (GameState.instance.paused && IsGrounded())
                 _gravity = jumpPower;
         };
     }
