@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using FishNet.Object;
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
+public class PlayerAnimation : NetworkBehaviour
 {
     private Movement _movement;
     private Animator _animator;
@@ -17,6 +18,9 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!base.IsOwner)
+            return;
+            
         _animator.SetFloat("MoveSpeed", _movement.magnitude * _movement.speed);
         // _animator.SetFloat("InputMagnitude", _movement.magnitude);
         if (_movement.magnitude > 0.1)

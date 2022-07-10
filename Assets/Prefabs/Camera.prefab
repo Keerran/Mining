@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8261749379111791631}
-  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 1.8684647, y: 7.5169997, z: -5.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -100,11 +100,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngle: 160
   minAngle: 10
-  rotateSpeed: 5
   distToPlayer: 3.5
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+  smoothLookTime: 0
+  smoothDistanceTime: 0
 --- !u!114 &4601508839109311485
 MonoBehaviour:
   m_ObjectHideFlags: 0

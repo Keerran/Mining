@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FishNet.Object;
 
 public class Cam : MonoBehaviour
 {
@@ -18,10 +19,18 @@ public class Cam : MonoBehaviour
     private float _distVelocity;
     private Rigidbody _playerRb;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        PlayerSpawnNotifier.onSpawn += Init;
+    }
+
+    void OnDestroy()
+    {
+        PlayerSpawnNotifier.onSpawn -= Init;
+    }
+
+    void Init(GameObject player)
+    {
         _focalPoint = player.transform.Find("Cam Focal Point");
         _currentLook = _focalPoint.position;
         _playerRb = player.GetComponent<Rigidbody>();
@@ -32,15 +41,17 @@ public class Cam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(_focalPoint == null)
+            return;
         var input = _controls.Player.Look.ReadValue<Vector2>() * 0.0025f;
 
         if (GameState.instance.inputBlocked)
             input = Vector2.zero;
 
-        if (input == Vector2.zero)
-        {
-            transform.position -= _playerRb.velocity * Time.deltaTime;
-        }
+        // if (input != Vector2.zero)
+        // {
+        //     transform.position += _playerRb.velocity * Time.deltaTime;
+        // }
         _currentLook = Vector3.SmoothDamp(_currentLook, _focalPoint.position, ref _lookVelocity, smoothLookTime);
 
         // Camera position relative to current look in spherical coordinates

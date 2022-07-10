@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using FishNet.Object;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : NetworkBehaviour
 {
     public bool Running => _controls.Player.Run.IsPressed();
 
@@ -20,13 +21,13 @@ public class Movement : MonoBehaviour
     private float _gravity;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _camera = Camera.main.transform;
         _controls = StateManager.controls;
         _controls.Player.Jump.performed += ctx => {
-            if (IsGrounded())
+            if (GameState.instance.paused && IsGrounded())
                 _gravity = jumpPower;
         };
     }
@@ -34,6 +35,9 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!base.IsOwner)
+            return;
+
         if (GameState.instance.inputBlocked)
         {
             magnitude = 0;
