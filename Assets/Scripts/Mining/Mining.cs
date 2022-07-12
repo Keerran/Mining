@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -17,6 +18,7 @@ public class Mining : MonoBehaviour
     public GameObject spot;
     public Transform focusUI;
 
+    private EventSystem _eventSystem;
     private bool _unloading;
     private int[][] _board;
     private Camera _camera;
@@ -31,6 +33,8 @@ public class Mining : MonoBehaviour
         var controls = StateManager.controls;
         controls.Mining.Move.performed += MoveFocus;
         controls.Mining.Mine.performed += Mine;
+
+        _eventSystem = FindObjectOfType<EventSystem>();
     }
 
     void MoveFocus(InputAction.CallbackContext ctx) {
@@ -46,8 +50,7 @@ public class Mining : MonoBehaviour
 
             if(Utils.Between(pos.x, 0, xSize) && Utils.Between(pos.y, 0, ySize))
             {
-                _focus = pos;
-                focusUI.position = GetPosition(pos.x, pos.y) + Vector3.back;
+                SetFocus(pos.x, pos.y);
             }
         }
     }
@@ -202,6 +205,13 @@ public class Mining : MonoBehaviour
         this.tool = tool;
     }
 
+    private void SetFocus(int x, int y)
+    {
+        _focus = new Vector2Int(x, y);
+        focusUI.position = GetPosition(x, y) + Vector3.back;
+        _eventSystem.SetSelectedGameObject(null);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -216,8 +226,7 @@ public class Mining : MonoBehaviour
                 var cell = hit.collider.transform.GetComponentInParent<Cell>();
                 if(cell != null)
                 {
-                    _focus = new Vector2Int(cell.x, cell.y);
-                    focusUI.position = GetPosition(cell.x, cell.y) + Vector3.back;
+                    SetFocus(cell.x, cell.y);
                     found = true;
                 }
             }

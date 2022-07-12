@@ -27,7 +27,7 @@ public class Movement : NetworkBehaviour
         _camera = Camera.main.transform;
         _controls = StateManager.controls;
         _controls.Player.Jump.performed += ctx => {
-            if (GameState.instance.paused && IsGrounded())
+            if (IsGrounded())
                 _gravity = jumpPower;
         };
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class StateManager : MonoBehaviour
     public GameObject inventory;
 
     public static Controls controls { get; private set; }
+
+    private List<Guid> _actionStates;
 
     void Awake()
     {
@@ -30,6 +33,8 @@ public class StateManager : MonoBehaviour
             Cursor.lockState = Cursor.lockState == CursorLockMode.Locked
                 ? CursorLockMode.None
                 : CursorLockMode.Locked;
+
+        _actionStates = new List<Guid>();
     }
 
     void OnEnable()
@@ -54,5 +59,23 @@ public class StateManager : MonoBehaviour
         Cursor.lockState = paused
             ? CursorLockMode.None
             : CursorLockMode.Locked;
+        if(paused)
+        {
+            foreach(var action in controls)
+            {
+                if(action.actionMap.name != "UI" && action.enabled)
+                {
+                    _actionStates.Add(action.id);
+                    action.Disable();
+                }
+            }
+        }
+        else
+        {
+            foreach(var actionId in _actionStates)
+            {
+                controls.FindAction(actionId.ToString()).Enable();
+            }
+        }
     }
 }
