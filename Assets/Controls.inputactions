@@ -438,6 +438,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Mouse",
+                    "type": "Value",
+                    "id": "e7a415cf-5dbb-48a8-beec-402b4cede3ec",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -891,6 +900,17 @@
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c150f0a8-eeba-422c-b3c9-f4cb0f517c5a",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Mouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -917,13 +937,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tools",
-                    "type": "Button",
+                    "name": "ToolWheel",
+                    "type": "Value",
                     "id": "c3d7fb29-6b8e-48a2-a00d-703756b4915b",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1149,28 +1169,6 @@
                 },
                 {
                     "name": "",
-                    "id": "01756944-0ef7-43d4-8fea-7b7392f6b65f",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Tools",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9775173f-00e5-4246-8203-578ae793512e",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Tools",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e68d468d-57f2-47a8-ba41-8decd95b036a",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -1188,6 +1186,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Mine",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "375c5c15-0fad-4d87-b4c2-e3b743faf630",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone(min=0.5)",
+                    "groups": "Gamepad",
+                    "action": "ToolWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

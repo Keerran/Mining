@@ -14,6 +14,7 @@ public class Mining : MonoBehaviour
     public GameObject[] prefabs;
     public MineItem[] items;
     public List<InventoryItem> drops;
+    public MiningTool[] tools;
     public MiningTool tool;
     public GameObject spot;
     public Transform focusUI;
@@ -33,8 +34,19 @@ public class Mining : MonoBehaviour
         var controls = StateManager.controls;
         controls.Mining.Move.performed += MoveFocus;
         controls.Mining.Mine.performed += Mine;
+        controls.Mining.ToolWheel.performed += ToolWheel;
 
         _eventSystem = FindObjectOfType<EventSystem>();
+    }
+
+    void ToolWheel(InputAction.CallbackContext ctx)
+    {
+        var input = ctx.ReadValue<Vector2>();
+        if(input.magnitude <= 0.5)
+            return;
+        var angle = 0.5f - Vector2.SignedAngle(Vector2.down, input) / 360f;
+
+        ChangeTool(tools[(int)(angle * tools.Length)]);
     }
 
     void MoveFocus(InputAction.CallbackContext ctx) {

@@ -460,6 +460,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""e7a415cf-5dbb-48a8-beec-402b4cede3ec"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -913,6 +922,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c150f0a8-eeba-422c-b3c9-f4cb0f517c5a"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Mouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -939,13 +959,13 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Tools"",
-                    ""type"": ""Button"",
+                    ""name"": ""ToolWheel"",
+                    ""type"": ""Value"",
                     ""id"": ""c3d7fb29-6b8e-48a2-a00d-703756b4915b"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -1171,28 +1191,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""01756944-0ef7-43d4-8fea-7b7392f6b65f"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Tools"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9775173f-00e5-4246-8203-578ae793512e"",
-                    ""path"": ""<Gamepad>/buttonWest"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Tools"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""e68d468d-57f2-47a8-ba41-8decd95b036a"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -1210,6 +1208,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Mine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""375c5c15-0fad-4d87-b4c2-e3b743faf630"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""StickDeadzone(min=0.5)"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ToolWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1301,11 +1310,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
+        m_UI_Mouse = m_UI.FindAction("Mouse", throwIfNotFound: true);
         // Mining
         m_Mining = asset.FindActionMap("Mining", throwIfNotFound: true);
         m_Mining_Move = m_Mining.FindAction("Move", throwIfNotFound: true);
         m_Mining_Mine = m_Mining.FindAction("Mine", throwIfNotFound: true);
-        m_Mining_Tools = m_Mining.FindAction("Tools", throwIfNotFound: true);
+        m_Mining_ToolWheel = m_Mining.FindAction("ToolWheel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1457,6 +1467,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_Pause;
+    private readonly InputAction m_UI_Mouse;
     public struct UIActions
     {
         private @Controls m_Wrapper;
@@ -1472,6 +1483,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
         public InputAction @Pause => m_Wrapper.m_UI_Pause;
+        public InputAction @Mouse => m_Wrapper.m_UI_Mouse;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1514,6 +1526,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
+                @Mouse.started -= m_Wrapper.m_UIActionsCallbackInterface.OnMouse;
+                @Mouse.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnMouse;
+                @Mouse.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnMouse;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1551,6 +1566,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Mouse.started += instance.OnMouse;
+                @Mouse.performed += instance.OnMouse;
+                @Mouse.canceled += instance.OnMouse;
             }
         }
     }
@@ -1561,14 +1579,14 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private IMiningActions m_MiningActionsCallbackInterface;
     private readonly InputAction m_Mining_Move;
     private readonly InputAction m_Mining_Mine;
-    private readonly InputAction m_Mining_Tools;
+    private readonly InputAction m_Mining_ToolWheel;
     public struct MiningActions
     {
         private @Controls m_Wrapper;
         public MiningActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Mining_Move;
         public InputAction @Mine => m_Wrapper.m_Mining_Mine;
-        public InputAction @Tools => m_Wrapper.m_Mining_Tools;
+        public InputAction @ToolWheel => m_Wrapper.m_Mining_ToolWheel;
         public InputActionMap Get() { return m_Wrapper.m_Mining; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1584,9 +1602,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Mine.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
                 @Mine.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
                 @Mine.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnMine;
-                @Tools.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
-                @Tools.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
-                @Tools.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnTools;
+                @ToolWheel.started -= m_Wrapper.m_MiningActionsCallbackInterface.OnToolWheel;
+                @ToolWheel.performed -= m_Wrapper.m_MiningActionsCallbackInterface.OnToolWheel;
+                @ToolWheel.canceled -= m_Wrapper.m_MiningActionsCallbackInterface.OnToolWheel;
             }
             m_Wrapper.m_MiningActionsCallbackInterface = instance;
             if (instance != null)
@@ -1597,9 +1615,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Mine.started += instance.OnMine;
                 @Mine.performed += instance.OnMine;
                 @Mine.canceled += instance.OnMine;
-                @Tools.started += instance.OnTools;
-                @Tools.performed += instance.OnTools;
-                @Tools.canceled += instance.OnTools;
+                @ToolWheel.started += instance.OnToolWheel;
+                @ToolWheel.performed += instance.OnToolWheel;
+                @ToolWheel.canceled += instance.OnToolWheel;
             }
         }
     }
@@ -1672,11 +1690,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnMouse(InputAction.CallbackContext context);
     }
     public interface IMiningActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnMine(InputAction.CallbackContext context);
-        void OnTools(InputAction.CallbackContext context);
+        void OnToolWheel(InputAction.CallbackContext context);
     }
 }

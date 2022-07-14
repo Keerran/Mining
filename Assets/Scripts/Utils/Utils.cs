@@ -4,4 +4,9 @@ public static class Utils
     {
         return minInclusive <= value && value < maxExclusive;
     }
+
+    public static bool Between(float value, float min, float max)
+    {
+        return min <= value && value <= max;
+    }
 }

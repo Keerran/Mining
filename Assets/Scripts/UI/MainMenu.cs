@@ -5,6 +5,7 @@ using FishNet.Managing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -33,7 +34,6 @@ public class MainMenu : MonoBehaviour
                 child.gameObject.SetActive(false);
 
         OpenScreen(initialScreen);
-
 
         _ipField.onSubmit.AddListener(JoinGame);
     }
