@@ -1884,6 +1884,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: c3d7fb29-6b8e-48a2-a00d-703756b4915b
     m_ActionName: Mining/Tools[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e7a415cf-5dbb-48a8-beec-402b4cede3ec
+    m_ActionName: UI/Mouse[/Mouse/position]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

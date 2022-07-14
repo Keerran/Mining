@@ -86,6 +86,6 @@ public class MainMenu : MonoBehaviour
     private void JoinGame(string address)
     {
         SceneManager.LoadScene("SampleScene");
-        _networkManager.ClientManager.StartConnection(address);
+        _networkManager.ClientManager.StartConnection(address, 7770);
     }
 }

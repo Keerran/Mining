@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using FishNet.Object;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerInteraction : MonoBehaviour
+public class PlayerInteraction : NetworkBehaviour
 {
     public Interactable focus = null;
 
@@ -20,6 +21,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
+        if(!base.IsOwner)
+            return;
         if(focus != null)
         {
             if(!CanInteract(focus.transform))
@@ -31,6 +34,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
+        if(!base.IsOwner)
+            return;
         var interactable = other.GetComponent<Interactable>();
         if(interactable != null && interactable != focus && CanInteract(other.transform))
         {
@@ -40,6 +45,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        if(!base.IsOwner)
+            return;
         if(other.gameObject == focus?.gameObject)
         {
             RemoveFocus();
