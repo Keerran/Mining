@@ -523,7 +523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4601508839109311482, guid: c658e988b9aed474580c3254da1c96a4, type: 3}
       propertyPath: smoothDistanceTime
-      value: 0.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8261749379111791631, guid: c658e988b9aed474580c3254da1c96a4, type: 3}
       propertyPath: m_Name
