@@ -11,6 +11,7 @@ public class Movement : NetworkBehaviour
     public float runMagnitude = 3;
     public float jumpPower;
     public float magnitude { get; private set; }
+    public float turnSmoothing;
 
     private Controls _controls;
     private Rigidbody _rigidbody;
@@ -19,6 +20,7 @@ public class Movement : NetworkBehaviour
     private Vector3 _combinedRaycast;
     private RaycastHit _groundHit;
     private float _gravity;
+    private Vector3 _turnVelocity;
 
     // Start is called before the first frame update
     void Awake()
@@ -26,7 +28,8 @@ public class Movement : NetworkBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _camera = Camera.main.transform;
         _controls = StateManager.controls;
-        _controls.Player.Jump.performed += ctx => {
+        _controls.Player.Jump.performed += ctx =>
+        {
             if (IsGrounded())
                 _gravity = jumpPower;
         };
@@ -35,7 +38,7 @@ public class Movement : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!base.IsOwner)
+        if (!base.IsOwner)
             return;
 
         if (GameState.instance.inputBlocked)
@@ -48,8 +51,14 @@ public class Movement : NetworkBehaviour
         var move = _controls.Player.Move.ReadValue<Vector2>();
 
         var direction = _camera.forward * move.y + _camera.right * move.x;
-
-        _moveDir = direction.ZeroY().normalized;
+        var targetDir = direction.ZeroY().normalized;
+        if (Vector3.Angle(_moveDir, targetDir) >= Mathf.Epsilon)
+        {
+            _moveDir = Vector3.SmoothDamp(_moveDir, targetDir, ref _turnVelocity, turnSmoothing / Vector3.Angle(_moveDir, targetDir) * 360f);
+        }
+        else{
+            _moveDir = Vector3.SmoothDamp(_moveDir, targetDir, ref _turnVelocity, turnSmoothing);
+        }
         magnitude = Mathf.Clamp01(Mathf.Abs(move.y) + Mathf.Abs(move.x));
 
         if (magnitude < 0.1)

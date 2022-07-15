@@ -104,8 +104,8 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  smoothLookTime: 0
-  smoothDistanceTime: 0
+  smoothLookTime: 0.15
+  smoothDistanceTime: 0.1
 --- !u!114 &4601508839109311485
 MonoBehaviour:
   m_ObjectHideFlags: 0
