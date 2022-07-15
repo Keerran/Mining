@@ -49,16 +49,9 @@ public class Movement : NetworkBehaviour
         }
 
         var move = _controls.Player.Move.ReadValue<Vector2>();
-
         var direction = _camera.forward * move.y + _camera.right * move.x;
-        var targetDir = direction.ZeroY().normalized;
-        if (Vector3.Angle(_moveDir, targetDir) >= Mathf.Epsilon)
-        {
-            _moveDir = Vector3.SmoothDamp(_moveDir, targetDir, ref _turnVelocity, turnSmoothing / Vector3.Angle(_moveDir, targetDir) * 360f);
-        }
-        else{
-            _moveDir = Vector3.SmoothDamp(_moveDir, targetDir, ref _turnVelocity, turnSmoothing);
-        }
+
+        _moveDir = direction.ZeroY().normalized;
         magnitude = Mathf.Clamp01(Mathf.Abs(move.y) + Mathf.Abs(move.x));
 
         if (magnitude < 0.1)
@@ -73,9 +66,11 @@ public class Movement : NetworkBehaviour
         if (!IsGrounded())
             _gravity += Physics.gravity.y * Time.fixedDeltaTime * 2f;
 
-        _rigidbody.velocity = _moveDir * (magnitude * speed) + _gravity * Vector3.up;
-        if (_moveDir.magnitude != 0)
-            transform.rotation = Quaternion.FromToRotation(Vector3.forward, _moveDir);
+        var targetVelocity = _moveDir * (magnitude * speed);
+        var velocity = Vector3.SmoothDamp(_rigidbody.velocity.ZeroY(), targetVelocity, ref _turnVelocity, turnSmoothing, 20f * (Running ? 2 : 1));
+        _rigidbody.velocity = velocity + _gravity * Vector3.up;
+        if (velocity.magnitude != 0)
+            transform.rotation = Quaternion.FromToRotation(Vector3.forward, velocity.normalized);
         var floorMovement = new Vector3(_rigidbody.position.x, FindFloor().y + 1f, _rigidbody.position.z);
 
         if (IsGrounded() && floorMovement != _rigidbody.position && _rigidbody.velocity.y <= 0)
