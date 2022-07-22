@@ -97,4 +97,9 @@ public static class Extensions
     {
         return new Vector2(vec.x, vec.y);
     }
+
+    public static Vector2 XZ(this Vector3 vec)
+    {
+        return new Vector2(vec.x, vec.z);
+    }
 }
